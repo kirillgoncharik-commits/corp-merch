@@ -1,15 +1,17 @@
 {
-  "name": "merch-mt",
+  "name": "corp-merch-eu",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "SEO-first lead generation site for event merchandise delivery to Malta.",
+  "description": "SEO-first lead generation site for corporate merchandise production and delivery across the European Union.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "dev": "npm run build && wrangler dev",
-    "deploy:preview": "npm run build && wrangler deploy",
-    "deploy:production": "npm run build && wrangler deploy"
+    "check:production": "REQUIRE_GA4=1 node scripts/check.mjs",
+    "test:worker": "node scripts/test-worker.mjs",
+    "dev": "npm run build && wrangler dev --var LOCAL_DEV:true",
+    "deploy:preview": "npm run build && npm run check && npm run test:worker && wrangler deploy --config wrangler.preview.jsonc",
+    "deploy:production": "npm run build && npm run check:production && npm run test:worker && wrangler deploy"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

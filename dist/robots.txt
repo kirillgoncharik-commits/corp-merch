@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://merch.mt/sitemap.xml
+Sitemap: https://corp-merch.eu/sitemap.xml

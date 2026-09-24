@@ -1,24 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "corp-merch-eu",
+  "name": "corp-merch-eu-preview",
   "main": "src/_worker.js",
   "compatibility_date": "2026-09-17",
-  "routes": [
-    {
-      "pattern": "corp-merch.eu",
-      "custom_domain": true
-    },
-    {
-      "pattern": "www.corp-merch.eu",
-      "custom_domain": true
-    }
-  ],
-  "send_email": [
-    {
-      "name": "LEAD_EMAIL",
-      "destination_address": "order@swaggy.agency"
-    }
-  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

@@ -1,24 +1,57 @@
 (() => {
-  const GA_MEASUREMENT_ID = "G-YRCP7PXYYE";
-  const isProductionHost = ["merch.mt", "www.merch.mt"].includes(window.location.hostname);
+  const productionHosts = ["corp-merch.eu", "www.corp-merch.eu"];
+  const isProductionHost = productionHosts.includes(window.location.hostname);
+  const measurementId = document
+    .querySelector('meta[name="ga4-measurement-id"]')
+    ?.getAttribute("content")
+    ?.trim();
 
   window.dataLayer = window.dataLayer || [];
-  if (isProductionHost) {
-    window.gtag =
-      window.gtag ||
-      function gtag() {
-        window.dataLayer.push(arguments);
-      };
+  window.gtag =
+    window.gtag ||
+    function gtag() {
+      window.dataLayer.push(arguments);
+    };
+
+  if (isProductionHost && /^G-[A-Z0-9]{6,}$/.test(measurementId || "")) {
+    const analyticsScript = document.createElement("script");
+    analyticsScript.async = true;
+    analyticsScript.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.append(analyticsScript);
     window.gtag("js", new Date());
-    window.gtag("config", GA_MEASUREMENT_ID);
+    window.gtag("config", measurementId, { anonymize_ip: true });
   }
 
   const pushEvent = (event, details = {}) => {
-    window.dataLayer.push({ event, ...details });
-    if (isProductionHost && window.gtag) {
-      window.gtag("event", event, details);
+    const safeDetails = Object.fromEntries(
+      Object.entries(details).filter(([, value]) => typeof value === "string" && value.length <= 100)
+    );
+    window.dataLayer.push({ event, ...safeDetails });
+    if (isProductionHost && /^G-[A-Z0-9]{6,}$/.test(measurementId || "")) {
+      window.gtag("event", event, safeDetails);
     }
   };
+
+  const menuButton = document.querySelector("[data-menu-toggle]");
+  const menu = document.querySelector("[data-menu]");
+  const closeMenu = () => {
+    if (!menuButton || !menu) return;
+    menuButton.setAttribute("aria-expanded", "false");
+    menu.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+  };
+
+  menuButton?.addEventListener("click", () => {
+    const willOpen = menuButton.getAttribute("aria-expanded") !== "true";
+    menuButton.setAttribute("aria-expanded", String(willOpen));
+    menu?.classList.toggle("is-open", willOpen);
+    document.body.classList.toggle("menu-open", willOpen);
+  });
+
+  menu?.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeMenu();
+  });
 
   document.querySelectorAll("[data-event]").forEach((element) => {
     element.addEventListener("click", () => {
@@ -33,61 +66,64 @@
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const event = entry.target.dataset.observeEvent;
-          if (entry.isIntersecting && event && !observedEvents.has(event)) {
-            observedEvents.add(event);
-            pushEvent(event);
+          const eventName = entry.target.dataset.observeEvent;
+          if (entry.isIntersecting && eventName && !observedEvents.has(eventName)) {
+            observedEvents.add(eventName);
+            pushEvent(eventName);
             observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: 0.3 }
     );
     document.querySelectorAll("[data-observe-event]").forEach((element) => observer.observe(element));
   }
 
-  const form = document.querySelector("[data-lead-form]");
   const stickyCta = document.querySelector(".mobile-sticky-cta");
-  const quoteSection = document.querySelector("#quote");
-  if (stickyCta && quoteSection) {
-    const updateStickyCta = () => {
-      const rect = quoteSection.getBoundingClientRect();
-      stickyCta.classList.toggle("is-hidden", rect.top < window.innerHeight && rect.bottom > 0);
-    };
-    updateStickyCta();
-    window.addEventListener("scroll", updateStickyCta, { passive: true });
-    window.addEventListener("resize", updateStickyCta);
+  const briefSection = document.querySelector("#brief");
+  const heroSection = document.querySelector(".hero");
+  if (stickyCta && briefSection && heroSection && "IntersectionObserver" in window) {
+    const visibleSections = new Set();
+    const stickyObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visibleSections.add(entry.target);
+          else visibleSections.delete(entry.target);
+        });
+        stickyCta.classList.toggle("is-hidden", visibleSections.size > 0);
+      },
+      { threshold: 0.08 }
+    );
+    stickyObserver.observe(heroSection);
+    stickyObserver.observe(briefSection);
   }
 
+  const form = document.querySelector("[data-lead-form]");
   if (!form) return;
 
   const status = form.querySelector("[data-form-status]");
   const submitButton = form.querySelector("[data-submit-button]");
   const startedAt = form.querySelector("[data-started-at]");
+  const pageContext = form.querySelector('[name="page"]')?.value || "homepage";
   let formStarted = false;
 
   const resetStartedAt = () => {
-    startedAt.value = String(Date.now());
+    if (startedAt) startedAt.value = String(Date.now());
   };
   resetStartedAt();
 
-  form.addEventListener(
-    "input",
-    () => {
-      if (!formStarted) {
-        formStarted = true;
-        pushEvent("form_start");
-      }
-    },
-    { once: true }
-  );
+  form.addEventListener("input", () => {
+    if (formStarted) return;
+    formStarted = true;
+    pushEvent("form_start", { page_context: pageContext });
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     status.textContent = "";
     status.className = "form-status";
-
     form.querySelectorAll("[aria-invalid]").forEach((field) => field.removeAttribute("aria-invalid"));
+
     if (!form.checkValidity()) {
       const invalid = form.querySelector(":invalid");
       invalid?.setAttribute("aria-invalid", "true");
@@ -112,25 +148,26 @@
 
       if (!response.ok) {
         if (result.code === "destination_not_configured") {
-          throw new Error("The preview form is ready, but lead delivery is not connected yet. Please use Telegram or email for a live quote.");
+          throw new Error("Lead delivery is not connected in this preview. Please use Telegram or email.");
         }
         if (response.status === 429) {
-          throw new Error("That was quick. Please wait a minute before sending another brief.");
+          throw new Error("Please wait a minute before sending another brief.");
         }
         throw new Error(result.message || "We could not send the brief. Please try Telegram or email instead.");
       }
 
-      pushEvent("form_submit", { event_name: payload.event || "not provided" });
+      pushEvent("form_submit", { page_context: pageContext });
       form.reset();
+      formStarted = false;
       resetStartedAt();
-      status.textContent = "Thank you—your brief is on its way. We will get back to you shortly.";
+      status.textContent = "Thank you — your brief is on its way. We will get back to you shortly.";
       status.classList.add("is-success");
     } catch (error) {
       status.textContent = error.message;
       status.classList.add("is-error");
     } finally {
       submitButton.disabled = false;
-      submitButton.innerHTML = 'Let’s Make Merch <span aria-hidden="true">↗</span>';
+      submitButton.innerHTML = 'Send Your Brief <span aria-hidden="true">↗</span>';
     }
   });
 })();

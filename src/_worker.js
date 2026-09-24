@@ -64,32 +64,40 @@ function normalize(raw) {
     name: clean(raw.name, 80),
     company: clean(raw.company, 100),
     email: clean(raw.email, 160).toLowerCase(),
-    event: clean(raw.event, 120),
-    eventDate: clean(raw.eventDate, 20),
+    event: clean(raw.event, 160),
     need: clean(raw.need, 2000),
-    quantity: clean(raw.quantity, 40),
-    budget: clean(raw.budget, 60),
-    message: clean(raw.message, 2000),
+    page: clean(raw.page, 80),
     website: clean(raw.website, 200),
     consent: raw.consent === true || raw.consent === "true" || raw.consent === "on",
     startedAt: Number(raw.startedAt || 0)
   };
 }
 
+function sameOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === (request.headers.get("host") || new URL(request.url).host);
+  } catch {
+    return false;
+  }
+}
+
 async function sendLeadEmail(binding, payload, request) {
   const country = clean(request.cf?.country || "", 16);
-  const subject = ["New merch.mt lead", payload.company || payload.name, payload.event]
+  const subject = ["New corp-merch.eu lead", payload.company, payload.event]
     .filter(Boolean)
     .join(" · ")
     .slice(0, 180);
 
   const text = [
-    "New merch.mt enquiry",
+    "New corp-merch.eu enquiry",
     "",
     `Name: ${payload.name}`,
     `Email: ${payload.email}`,
-    payload.company ? `Company: ${payload.company}` : null,
-    payload.event ? `Event: ${payload.event}` : null,
+    `Company: ${payload.company}`,
+    payload.event ? `Event / city / deadline: ${payload.event}` : null,
+    payload.page ? `Page: ${payload.page}` : null,
     country ? `Country: ${country}` : null,
     "",
     "Brief:",
@@ -97,22 +105,23 @@ async function sendLeadEmail(binding, payload, request) {
   ].filter((line) => line !== null).join("\n");
 
   const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#171717;max-width:680px">
-      <h2 style="margin:0 0 18px">New merch.mt enquiry</h2>
+    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#151817;max-width:680px">
+      <h2 style="margin:0 0 18px;color:#176b68">New corp-merch.eu enquiry</h2>
       <table style="border-collapse:collapse;width:100%;margin-bottom:20px">
         <tr><td style="padding:5px 12px 5px 0;color:#666">Name</td><td style="padding:5px 0"><strong>${htmlEscape(payload.name)}</strong></td></tr>
         <tr><td style="padding:5px 12px 5px 0;color:#666">Email</td><td style="padding:5px 0"><a href="mailto:${htmlEscape(payload.email)}">${htmlEscape(payload.email)}</a></td></tr>
-        ${payload.company ? `<tr><td style="padding:5px 12px 5px 0;color:#666">Company</td><td style="padding:5px 0">${htmlEscape(payload.company)}</td></tr>` : ""}
-        ${payload.event ? `<tr><td style="padding:5px 12px 5px 0;color:#666">Event</td><td style="padding:5px 0">${htmlEscape(payload.event)}</td></tr>` : ""}
+        <tr><td style="padding:5px 12px 5px 0;color:#666">Company</td><td style="padding:5px 0">${htmlEscape(payload.company)}</td></tr>
+        ${payload.event ? `<tr><td style="padding:5px 12px 5px 0;color:#666">Event / city / deadline</td><td style="padding:5px 0">${htmlEscape(payload.event)}</td></tr>` : ""}
+        ${payload.page ? `<tr><td style="padding:5px 12px 5px 0;color:#666">Page</td><td style="padding:5px 0">${htmlEscape(payload.page)}</td></tr>` : ""}
         ${country ? `<tr><td style="padding:5px 12px 5px 0;color:#666">Country</td><td style="padding:5px 0">${htmlEscape(country)}</td></tr>` : ""}
       </table>
-      <div style="padding:16px 18px;background:#f4f4f1;border-radius:10px;white-space:pre-wrap">${htmlEscape(payload.need)}</div>
-      <p style="margin:18px 0 0;color:#666;font-size:13px">Submitted via merch.mt</p>
+      <div style="padding:16px 18px;background:#d8ece7;border-radius:10px;white-space:pre-wrap">${htmlEscape(payload.need)}</div>
+      <p style="margin:18px 0 0;color:#666;font-size:13px">Submitted via corp-merch.eu</p>
     </div>`;
 
   await binding.send({
     to: "order@swaggy.agency",
-    from: { email: "leads@merch.mt", name: "merch.mt" },
+    from: { email: "leads@corp-merch.eu", name: "corp-merch.eu" },
     replyTo: { email: payload.email, name: payload.name },
     subject,
     text,
@@ -121,6 +130,8 @@ async function sendLeadEmail(binding, payload, request) {
 }
 
 async function handleLead(request, env) {
+  if (!sameOrigin(request)) return json({ ok: false, code: "invalid_origin" }, 403);
+
   let raw;
   try {
     raw = await parseBody(request);
@@ -136,7 +147,7 @@ async function handleLead(request, env) {
   if (!payload.startedAt || age < 1500 || age > 21_600_000) {
     return json({ ok: false, code: "invalid_form_session", message: "Please refresh the page and try again." }, 400);
   }
-  if (!payload.name || !payload.need || !validEmail(payload.email) || !payload.consent) {
+  if (!payload.name || !payload.company || !payload.need || !validEmail(payload.email) || !payload.consent) {
     return json({ ok: false, code: "validation_error", message: "Please check the required fields." }, 400);
   }
   if (await rateLimited(request)) return json({ ok: false, code: "rate_limited" }, 429);
@@ -162,10 +173,13 @@ async function handleLead(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const requestedHost = (request.headers.get("host") || url.host).split(":")[0];
+    const isLocalHost = env.LOCAL_DEV === "true" || requestedHost === "localhost" || requestedHost === "127.0.0.1" || requestedHost === "[::1]";
+    const isWorkersPreview = requestedHost.endsWith(".workers.dev");
 
-    if (url.hostname === "www.merch.mt" || url.protocol !== "https:") {
+    if (requestedHost === "www.corp-merch.eu" || (!isLocalHost && !isWorkersPreview && url.protocol !== "https:")) {
       url.protocol = "https:";
-      url.hostname = "merch.mt";
+      url.hostname = "corp-merch.eu";
       return Response.redirect(url.toString(), 308);
     }
 
@@ -174,7 +188,6 @@ export default {
       return handleLead(request, env);
     }
 
-    const isWorkersPreview = url.hostname.endsWith(".workers.dev");
     if (isWorkersPreview && url.pathname === "/robots.txt") {
       return new Response("User-agent: *\nDisallow: /\n", {
         headers: {
@@ -189,11 +202,8 @@ export default {
     if (!isWorkersPreview) return response;
 
     const headers = new Headers(response.headers);
-    const contentType = headers.get("content-type") || "";
-    if (contentType.includes("text/html")) {
-      headers.set("X-Robots-Tag", "noindex, nofollow");
-    }
-
+    headers.set("X-Robots-Tag", "noindex, nofollow");
+    headers.set("Cache-Control", "no-store");
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,

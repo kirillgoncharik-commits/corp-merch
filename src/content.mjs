@@ -1,200 +1,289 @@
 export const site = {
-  name: "merch.mt",
-  url: "https://merch.mt",
-  title: "Event & Conference Merchandise Malta | merch.mt",
+  name: "corp-merch.eu",
+  url: "https://corp-merch.eu",
+  title: "Corporate Merchandise & Event Merch Europe | SWAGGY",
   description:
-    "Branded event merchandise, conference giveaways and promotional products produced in the EU and delivered to booths, hotels and venues across Malta.",
+    "Corporate merch, gifts, printing and POSM produced in the EU and delivered directly to offices, hotels and event venues across Europe.",
   email: "order@swaggy.agency",
   telegramUrl: "https://t.me/swaggyagency",
   telegramLabel: "@swaggyagency",
   poweredByUrl: "https://swaggy.agency",
-  privacyUrl: "https://swaggy.agency/en/privacy-policy"
+  privacyUrl: "https://swaggy.agency/en/privacy-policy",
+  gaMeasurementId: process.env.GA4_MEASUREMENT_ID || ""
 };
 
 export const categories = [
   {
     number: "01",
-    title: "Event Giveaways",
-    description: "Conference giveaways and promotional products for booth visitors and event attendees."
+    title: "Event & Conference Merchandise",
+    description:
+      "Giveaways, booth essentials and team merchandise planned around the audience, venue and event date."
   },
   {
     number: "02",
-    title: "Team & Staff Merch",
-    description: "Useful merchandise and apparel for the people representing your brand."
+    title: "Corporate Gifts",
+    description:
+      "Considered gifts for clients, partners, speakers and teams — from useful everyday items to coordinated sets."
   },
   {
     number: "03",
-    title: "Custom Apparel & Textile",
-    description: "T-shirts, polos, bags, backpacks and custom textile for your event team."
+    title: "Apparel & Custom Textile",
+    description:
+      "Branded T-shirts, hoodies, caps, socks, bags and custom textile for teams, campaigns and communities."
   },
   {
     number: "04",
-    title: "Client & Partner Gifts",
-    description: "Branded gifts for meetings, dinners, partners and clients."
+    title: "Promotional Products",
+    description:
+      "Practical branded products selected for a campaign goal, audience and realistic production window."
   },
   {
     number: "05",
-    title: "VIP & Welcome Kits",
-    description: "Premium gifts and coordinated kits for clients, speakers, partners and guests."
+    title: "Printing & POSM",
+    description:
+      "Printed materials and point-of-sale assets for exhibitions, activations, offices and partner events."
   },
   {
     number: "06",
-    title: "Custom Event Merchandise",
-    description: "Campaign-specific products designed around your activation."
+    title: "Welcome Kits & Employee Gifts",
+    description:
+      "Onboarding kits, milestone gifts and distributed team packs that arrive ready to hand over."
   }
 ];
 
-export const featuredConferences = [
-  {
-    index: "01",
-    name: "SiGMA Europe Malta",
-    description: "SiGMA Malta merchandise for exhibitors, sponsors and event teams."
-  },
-  {
-    index: "02",
-    name: "SBC Summit Malta",
-    description: "SBC Malta merchandise, team apparel and conference giveaways."
-  },
-  {
-    index: "03",
-    name: "NEXT Summit Valletta",
-    description: "NEXT Valletta merchandise and branded gifts for international teams."
-  }
-];
-
-export const otherConferences = [
-  "EU-Startups Summit",
-  "MedTech World",
-  "FinanceMalta Annual Conference",
-  "PLAYCON Malta",
-  "Malta Aviation Conference & Expo",
-  "Malta Maritime Summit"
+export const useCases = [
+  ["Conferences & Exhibitions", "Merchandise delivered to the venue, booth or hotel before your team arrives."],
+  ["Office & Team Merchandise", "One coordinated order for teams and offices in different EU locations."],
+  ["Employee Onboarding", "Welcome kits assembled, packed and routed to the agreed destinations."],
+  ["Marketing Campaigns", "Products, print and POSM aligned with one campaign and rollout plan."],
+  ["Partner & Client Gifts", "Branded gifts prepared for meetings, events and relationship programmes."],
+  ["DevRel & Community Events", "Useful merchandise for meetups, hackathons and developer conferences."]
 ];
 
 export const industries = [
   "iGaming",
+  "IT / SaaS",
   "FinTech",
   "Crypto",
   "Gaming",
-  "Tech",
   "Finance",
-  "SaaS",
   "Startups",
-  "MedTech"
+  "Agencies"
+];
+
+export const deliveryCities = [
+  "Barcelona",
+  "Amsterdam",
+  "Lisbon",
+  "Prague",
+  "Berlin",
+  "Paris",
+  "Warsaw",
+  "Riga",
+  "Malta"
 ];
 
 export const gallery = [
   {
-    image: "starcrown-event-gifts",
-    alt: "Branded StarCrown conference gifts displayed at an international event",
-    client: "StarCrown",
-    type: "Conference gifts",
-    className: "gallery-card--tall"
+    image: "iponweb-conference-merchandise",
+    mobileImage: "iponweb-conference-merchandise-640",
+    width: 1200,
+    height: 800,
+    mobileWidth: 640,
+    mobileHeight: 427,
+    alt: "IPONWEB branded conference bags and event accessories",
+    client: "IPONWEB",
+    type: "Conference merchandise",
+    className: "project-card--wide"
   },
   {
-    image: "monolead-conference-merchandise",
-    alt: "Monolead branded socks, bottles and giveaways at a conference booth",
-    client: "Monolead",
-    type: "Event merchandise",
-    className: "gallery-card--tall"
+    image: "fluence-branded-event-socks",
+    mobileImage: "fluence-branded-event-socks-405",
+    width: 720,
+    height: 1280,
+    mobileWidth: 405,
+    mobileHeight: 720,
+    alt: "Fluence branded socks prepared as an event giveaway",
+    client: "Fluence",
+    type: "Branded textile",
+    className: "project-card--portrait"
   },
   {
-    image: "silkair-branded-notebooks",
-    alt: "Blue and white branded notebooks produced for Silkair",
-    client: "Silkair",
-    type: "Branded notebooks",
+    image: "robo-quest-gaming-merchandise",
+    mobileImage: "robo-quest-gaming-merchandise-640",
+    width: 1280,
+    height: 960,
+    mobileWidth: 640,
+    mobileHeight: 480,
+    alt: "Robo Quest gaming merchandise with caps and drink bottles at a gaming station",
+    client: "Robo Quest",
+    type: "Gaming merchandise",
     className: ""
   },
   {
-    image: "cryptoboss-merchandise-kit",
-    alt: "CryptoBoss merchandise kit with cap, bottle and notebook",
-    client: "CryptoBoss",
-    type: "Team kit",
+    image: "indrive-employee-welcome-kit-europe",
+    mobileImage: "indrive-employee-welcome-kit-europe-640",
+    width: 1280,
+    height: 960,
+    mobileWidth: 640,
+    mobileHeight: 480,
+    alt: "inDrive branded employee welcome kit with textile, drinkware and printed materials",
+    client: "inDrive",
+    type: "Employee welcome kit",
     className: ""
   },
   {
-    image: "convert-it-event-giveaway",
-    alt: "Convert It branded event giveaway photographed at a conference venue",
-    client: "Convert It",
-    type: "Event giveaway",
-    className: "gallery-card--tall"
-  },
-  {
-    image: "unlim-event-materials",
-    alt: "UNLIM branded event materials and water bottle",
-    client: "UNLIM",
-    type: "Event materials",
-    className: "gallery-card--wide"
-  },
-  {
-    image: "clickadu-custom-merchandise",
-    alt: "Clickadu branded accessories prepared for a conference",
-    client: "Clickadu",
-    type: "Custom merchandise",
-    className: "gallery-card--tall"
-  },
-  {
-    image: "epn-custom-textile",
-    alt: "Custom e.pn branded textile displayed at an event",
-    client: "e.pn",
-    type: "Custom textile",
+    image: "holiday-corporate-gift-box-europe",
+    mobileImage: "holiday-corporate-gift-box-europe-640",
+    width: 1280,
+    height: 960,
+    mobileWidth: 640,
+    mobileHeight: 480,
+    alt: "Holiday corporate gift box with slippers, drinkware, tea and a greeting card",
+    client: "Holiday project",
+    type: "Corporate gift box",
     className: ""
   },
   {
-    image: "adsterra-event-gifts",
-    alt: "Adsterra branded drinkware and client gifts at a conference",
-    client: "Adsterra",
-    type: "Event gifts",
-    className: "gallery-card--wide"
+    image: "eschatology-branded-apparel-set",
+    mobileImage: "eschatology-branded-apparel-set-512",
+    width: 1023,
+    height: 1280,
+    mobileWidth: 512,
+    mobileHeight: 641,
+    alt: "Eschatology Entertainment branded hoodie, T-shirt, notebook, pen and drinkware",
+    client: "Eschatology Entertainment",
+    type: "Branded apparel set",
+    className: "project-card--portrait"
   }
 ];
 
 export const benefits = [
-  ["Don't carry boxes to Malta", "Your team travels light. Your merchandise takes the direct route to the agreed location."],
-  ["EU production", "Sourcing, branding and production stay within the EU. Delivery to Malta stays inside the EU customs area — no import customs clearance or import duty."],
-  ["Delivery where you need it", "Straight to your booth, hotel or another agreed location in Malta."],
-  ["One point of contact", "One manager coordinates production, quality checks and delivery."],
-  ["Products that fit the moment", "From simple giveaways to custom merchandise, apparel and VIP gifts."],
-  ["Less event-week stress", "Order ahead and arrive knowing the merchandise is handled."]
+  {
+    title: "EU production",
+    description:
+      "Sourcing, branding and production are coordinated within the European Union for EU-focused orders."
+  },
+  {
+    title: "One point of contact",
+    description:
+      "One manager coordinates selection, suppliers, approvals, quality control and delivery."
+  },
+  {
+    title: "One accounting flow",
+    description:
+      "A consolidated supplier relationship simplifies procurement and accounting across projects and locations."
+  },
+  {
+    title: "Direct event delivery",
+    description:
+      "Orders can go directly to an office, hotel, conference venue, booth or another agreed event location."
+  },
+  {
+    title: "Deadline management",
+    description:
+      "Production is planned backwards from the date the merchandise must be ready at its destination."
+  },
+  {
+    title: "No unnecessary customs hassle",
+    description:
+      "Standard intra-EU deliveries normally do not require import customs clearance. Non-EU destinations follow different rules."
+  }
 ];
 
 export const steps = [
-  ["01", "Tell us your event", "Share the event name, dates and delivery location."],
-  ["02", "Send your brief", "Tell us the idea, quantity, branding and approximate budget."],
-  ["03", "Approve the merch", "We suggest options and align the final specification with you."],
-  ["04", "We produce in the EU", "Branding, production and quality control stay with one team."],
-  ["05", "We deliver to Malta", "Your order arrives at your booth, hotel room or another agreed location."]
+  ["01", "Brief", "Share the use case, destination, quantity, branding and deadline — even if some details are still open."],
+  ["02", "Selection", "We prepare a focused shortlist that fits the audience, budget, timing and delivery plan."],
+  ["03", "Production", "Approved products move into EU sourcing, production and branding."],
+  ["04", "Quality control", "The order is checked against the approved specification before packing and dispatch."],
+  ["05", "Packing", "Items are packed for the handover, event, team or destination structure you need."],
+  ["06", "Delivery", "We coordinate delivery to the agreed office, hotel, venue, booth or event location."]
 ];
 
 export const faqs = [
   {
-    question: "How early should I order merchandise for an event in Malta?",
+    question: "Can you deliver merchandise directly to a conference venue in Europe?",
     answer:
-      "Three weeks or more is the ideal, stress-free window. Two weeks is tight but can still be possible for selected products. Under two weeks, including urgent orders, is assessed case by case based on the product, branding and quantity."
+      "Yes. We can coordinate delivery to a conference venue, booth, hotel or another agreed event location. The receiving contact, access rules and delivery window are confirmed before dispatch."
   },
   {
-    question: "Can you deliver merchandise to a conference venue or hotel in Malta?",
+    question: "Do I need to handle customs when ordering merchandise inside the EU?",
     answer:
-      "Yes. We can arrange delivery straight to your conference booth, hotel room or another agreed location in Malta. We confirm the delivery details and contact person with you before dispatch."
+      "For standard intra-EU deliveries, import customs clearance is normally not required. The UK, Switzerland, Serbia, the UAE and other non-EU destinations follow different customs rules and are assessed separately."
   },
   {
-    question: "Can you produce merchandise for SiGMA, SBC or NEXT in Malta?",
+    question: "How early should I order conference merchandise?",
     answer:
-      "Yes. We produce SiGMA Malta merchandise, SBC Malta merchandise and NEXT Valletta merchandise for exhibitors, sponsors and international event teams. merch.mt and SWAGGY are not presented as official suppliers or partners of these events."
+      "A lead time of at least three to four weeks gives the best choice and room for approvals. Custom products, large quantities and multi-location deliveries may need longer. Urgent briefs are assessed product by product."
   },
   {
-    question: "Are you a merchandise supplier in Malta?",
+    question: "Can you manage merchandise for multiple European offices?",
     answer:
-      "We are an EU production partner for companies attending events in Malta. Production and delivery stay within the EU Single Market, so standard shipments to Malta do not require import customs clearance or import duty. We then arrange delivery to your venue, booth or hotel in Malta."
+      "Yes. We can coordinate one product and branding plan, then pack and deliver the order to several agreed EU office locations."
   },
   {
-    question: "What kind of event merchandise can you produce?",
+    question: "Can you produce custom apparel, printing and POSM?",
     answer:
-      "We produce conference giveaways, promotional products, branded apparel, bags and textiles, team merchandise, client gifts, VIP gifts, welcome kits and custom campaign-specific products."
+      "Yes. The service covers branded apparel and textile, promotional products, printed materials, POSM, corporate gifts and coordinated kits."
   },
   {
-    question: "How do I order merch for a Malta event?",
+    question: "Do you work with iGaming, fintech, crypto and technology companies?",
     answer:
-      "Send us the event name, date, audience, quantity and approximate budget. We will suggest branded merchandise that fits your booth, team, partners or clients, then coordinate production and delivery to Malta."
+      "Yes. SWAGGY works with international B2B teams, including iGaming, IT and SaaS, fintech, crypto, gaming, finance, startups and agencies."
+  },
+  {
+    question: "Can you prepare employee welcome kits?",
+    answer:
+      "Yes. We can source the items, apply branding, assemble the kits, add printed materials and route them to the agreed team or office destinations."
+  },
+  {
+    question: "Can you deliver directly to a hotel before an event?",
+    answer:
+      "Yes, when the hotel accepts deliveries. We confirm the receiving name, address, arrival window and any storage or access requirements in advance."
   }
 ];
+
+export const igamingPage = {
+  path: "/igaming-merchandise-europe/",
+  title: "iGaming Merchandise Europe | SWAGGY",
+  description:
+    "iGaming merchandise, conference giveaways, team apparel and partner gifts produced in the EU and delivered across Europe.",
+  eyebrow: "Merchandise for iGaming teams",
+  h1: "iGaming Merchandise Production Across Europe",
+  lead:
+    "Conference giveaways, team apparel, partner gifts and event materials produced in the EU and delivered to the office, hotel or venue where your team needs them.",
+  proof: ["EU production", "Deadline-oriented", "Direct event delivery"],
+  introTitle: "One merchandise partner for a fast-moving event calendar.",
+  introCopy:
+    "SWAGGY coordinates the complete flow — selection, sourcing, branding, production, quality control, packing and delivery — so event and marketing teams do not have to manage a network of local vendors.",
+  serviceTypes: [
+    "iGaming conference merchandise",
+    "conference giveaways",
+    "team apparel",
+    "partner and VIP gifts",
+    "printed event materials",
+    "booth merchandise"
+  ],
+  faqs: [
+    {
+      question: "Can you deliver iGaming merchandise directly to a European conference venue?",
+      answer:
+        "Yes. Delivery can be coordinated to an agreed venue, booth, hotel or local receiving point, subject to the location's delivery and access rules."
+    },
+    {
+      question: "Can one order cover staff apparel, giveaways and VIP gifts?",
+      answer:
+        "Yes. We can coordinate several merchandise groups under one project, with a shared approval, production and delivery plan."
+    },
+    {
+      question: "Do you claim to be an official supplier of iGaming events?",
+      answer:
+        "No. corp-merch.eu and SWAGGY are not official suppliers or partners of any event unless this is explicitly stated."
+    },
+    {
+      question: "Can you work backwards from a fixed conference date?",
+      answer:
+        "Yes. We plan the shortlist, approval milestones, production and dispatch around the required delivery date and flag timing risks early."
+    }
+  ]
+};

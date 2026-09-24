@@ -1,97 +1,112 @@
-# merch.mt
+# corp-merch.eu
 
-One-page, SEO-first lead-generation website for international teams ordering event merchandise for conferences in Malta.
+SEO-first lead-generation website for European companies that need corporate merchandise, event giveaways, gifts, printing, POSM, branded apparel or welcome kits produced and delivered across the EU.
+
+The project is derived from the proven `merch.mt` architecture but has its own positioning, content, petrol/graphite visual identity, SEO semantics, analytics configuration and Cloudflare deployment.
+
+## Production routes
+
+- `/` — corporate merchandise and EU delivery homepage
+- `/igaming-merchandise-europe/` — focused iGaming service page
+- `/api/lead` — validated lead form handled by the Cloudflare Worker
+- `/robots.txt` and `/sitemap.xml` — generated production crawl controls
+
+The structure in `scripts/build.mjs` supports adding intent-led service and event pages without generating doorway city pages.
 
 ## Project structure
 
-- `src/content.mjs` — editable copy, conferences, categories, FAQ, project gallery and contact details
-- `src/styles.css` — complete responsive design system
-- `src/themes/editorial.css` — Concept B, the light editorial art direction
-- `src/themes/igaming.css` — Concept C, the dark iGaming event-tech art direction
-- `src/themes/event-culture.css` — Concept D, the editorial × event-tech hybrid art direction
-- `src/themes/production.css` — consolidated production candidate
-- `src/script.js` — navigation, analytics events and lead form states
-- `src/assets/images` — optimized WebP project photography
-- `src/_worker.js` — Cloudflare Worker for lead validation, delivery and static assets
-- `scripts/build.mjs` — dependency-free static build
-- `dist` — generated Cloudflare Pages output
-
-## Documentation
-
-- [`docs/seo-geo-implementation-report.md`](docs/seo-geo-implementation-report.md) — code-based SEO, GEO/AI Search and post-launch measurement report
+- `src/content.mjs` — positioning, service categories, projects, FAQ and contact details
+- `src/styles.css` — responsive petrol/graphite production design system
+- `src/script.js` — navigation, privacy-safe analytics events and lead form states
+- `src/assets/images` — optimized desktop/mobile WebP project photography
+- `src/_worker.js` — Cloudflare Worker for canonical redirects, preview noindex and lead delivery
+- `scripts/build.mjs` — dependency-free static build and metadata/schema generation
+- `scripts/check.mjs` — production anti-regression, SEO, asset and Cloudflare checks
+- `docs/HANDOFF.md` — production launch and operations checklist
+- `docs/seo-geo-implementation-report.md` — SEO/GEO coverage and growth plan
+- `dist/` — generated deployable output
 
 ## Local development
 
 ```bash
-npm install
+npm ci
 npm run build
 npm run check
 npm run dev
 ```
 
-The local Cloudflare preview includes the form function. Without a configured destination, the form intentionally shows a clear preview-mode message and directs the visitor to Telegram or email.
+`npm run check` validates the implementation and may warn while the dedicated GA4 stream is not configured. For the final release, provide the new stream ID and run the strict check:
 
-The approved production layout is generated at the site root:
+```bash
+GA4_MEASUREMENT_ID=G-XXXXXXXXXX npm run build
+GA4_MEASUREMENT_ID=G-XXXXXXXXXX npm run check:production
+```
 
-- `/` — production homepage
-- `/production/` — noindex review mirror of the production homepage
-- `/editorial/` — noindex Editorial Merch reference
-- `/igaming/` — noindex iGaming Event Tech reference
-- `/event-culture/` — noindex Event Culture reference
+The old `merch.mt` measurement ID is explicitly rejected by the anti-regression checks.
 
-All review routes share the production canonical and are intentionally excluded from the sitemap. In addition, the Cloudflare Worker adds a host-wide `X-Robots-Tag: noindex, nofollow` guard and a disallowing `robots.txt` on `*.workers.dev`, so preview deployments cannot be indexed even though the root homepage is production-ready for `merch.mt`.
+## Lead delivery
 
-## Lead delivery configuration
+The form posts to `/api/lead`. The Worker validates the payload, checks the request origin, uses a honeypot and form-age check, applies a lightweight per-IP cooldown and sends the enquiry through the `LEAD_EMAIL` Cloudflare Email Service binding.
 
-Configure at least one destination in Cloudflare Pages. Keep all secrets server-side.
+- Destination: `order@swaggy.agency`
+- Sender configured in code: `leads@corp-merch.eu`
+- Binding: `LEAD_EMAIL`
 
-### Generic webhook
-
-- `FORM_WEBHOOK_URL` — destination URL
-- `FORM_WEBHOOK_SECRET` — optional bearer token
-
-### Telegram bot
-
-- `TELEGRAM_BOT_TOKEN` — Telegram bot token (secret)
-- `TELEGRAM_CHAT_ID` — destination chat ID
-
-The endpoint validates required fields, uses a honeypot and form-age check, applies a lightweight per-IP cooldown, and returns explicit success/error states to the frontend.
+Cloudflare must authorize the destination and sender before the end-to-end production test.
 
 ## Analytics
 
-The frontend pushes these events to `window.dataLayer`, ready for GA4/GTM once the production measurement setup is approved:
+Create a separate GA4 web stream for `corp-merch.eu` and expose its Measurement ID as the GitHub Actions variable `GA4_MEASUREMENT_ID`. Do not reuse the `merch.mt` stream.
+
+Implemented events:
 
 - `hero_cta_click`
+- `header_cta_click`
 - `form_start`
-- `form_submit`
+- `form_submit` — primary conversion
 - `telegram_click`
 - `email_click`
 - `project_gallery_view`
-- `conference_section_view`
+- `event_cta_click`
 
-No analytics script or cookie banner is loaded in the preview.
+Free-form brief text, email addresses, names, company names and event details are never sent to GA4.
 
-## Cloudflare Workers
+## Cloudflare deployment
 
-The project uses Cloudflare's current Workers static-assets architecture, the modern equivalent recommended for new Pages-style projects. `wrangler.jsonc` serves `dist` globally and sends only `/api/*` through the Worker.
+Required GitHub repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+Required GitHub Actions variable:
+
+- `GA4_MEASUREMENT_ID`
+
+The workflow builds and checks every push to `main`. It deploys only when both Cloudflare credentials and the dedicated GA4 ID are present. The production Worker serves `corp-merch.eu` and permanently redirects `www.corp-merch.eu` to the apex domain.
+
+Every `*.workers.dev` response receives `X-Robots-Tag: noindex, nofollow`; its `robots.txt` disallows crawling. Production remains indexable and canonical to `https://corp-merch.eu/`.
+
+For a form-disabled, noindex Cloudflare preview that cannot touch the production custom domains:
 
 ```bash
 npm run deploy:preview
-npm run deploy:production
 ```
 
-The temporary preview is deployed to a `workers.dev` address. Connect `merch.mt` only after approval. The canonical URL and sitemap are already prepared for the final domain.
+This uses `wrangler.preview.jsonc` and the separate Worker name `corp-merch-eu-preview`.
 
-## Before production launch
+Current noindex preview: [corp-merch-eu-preview.kg-758.workers.dev](https://corp-merch-eu-preview.kg-758.workers.dev/)
 
-1. Confirm and configure the final form destination.
-2. Connect the `merch.mt` domain and verify the canonical redirect policy in Cloudflare.
-3. Add the approved GA4/GTM measurement setup and EU consent implementation.
-4. Verify Google Search Console ownership and submit `/sitemap.xml`.
-5. Run a final end-to-end form test with the real destination.
-6. Verify that `merch.mt/` is indexable while the `workers.dev` preview remains blocked by the Worker-level robots guard.
+## Release gate
 
+Before connecting the production domain:
 
-## Production handoff
+1. Create the dedicated GA4 stream and configure `GA4_MEASUREMENT_ID`.
+2. Authorize Cloudflare Email Routing / Email Service for `order@swaggy.agency` and `leads@corp-merch.eu`.
+3. Add the Cloudflare repository secrets and run the production workflow.
+4. Test one real lead end to end and confirm the reply-to address.
+5. Confirm the workers.dev preview is blocked from indexing.
+6. Connect the apex and `www` domains; verify the permanent redirect.
+7. Verify Search Console ownership and submit `https://corp-merch.eu/sitemap.xml`.
+8. Check GA4 DebugView without sending form data as event parameters.
 
-See [docs/HANDOFF.md](docs/HANDOFF.md) for production ownership, deployment, analytics and lead-delivery details.
+See `docs/HANDOFF.md` for the full production checklist.
