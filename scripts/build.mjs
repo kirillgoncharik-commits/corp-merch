@@ -6,9 +6,11 @@ import {
   benefits,
   categories,
   faqs,
+  featuredEvents,
   gallery,
   igamingPage,
   industries,
+  otherEvents,
   site,
   steps,
   useCases
@@ -61,9 +63,9 @@ const header = ({ internal = false } = {}) => {
     <nav class="main-nav" id="main-menu" aria-label="Main navigation" data-menu>
       <a href="${root}#services">Services</a>
       <a href="${root}#projects">Projects</a>
-      <a href="${root}#delivery">EU delivery</a>
+      <a href="${root}#events">Events</a>
       <a href="${root}#process">Process</a>
-      <a class="button button--small button--mint" href="#brief" data-event="header_cta_click">Get a Merch Proposal</a>
+      <a class="button button--small button--mint" href="#brief" data-event="header_cta_click">Let's Make Merch</a>
     </nav>
   </header>`;
 };
@@ -100,35 +102,24 @@ const leadForm = ({ context = "homepage" } = {}) => `
       <input type="hidden" name="startedAt" value="" data-started-at>
       <input type="hidden" name="page" value="${context}">
       <label class="consent"><input type="checkbox" name="consent" required> <span>I agree to the <a href="${site.privacyUrl}" target="_blank" rel="noopener">processing of my personal data</a> for this enquiry.</span></label>
-      <button class="button button--submit" type="submit" data-submit-button>Send Your Brief <span aria-hidden="true">↗</span></button>
+      <button class="button button--submit" type="submit" data-submit-button>Let's Make Merch <span aria-hidden="true">↗</span></button>
       <p class="form-status" role="status" aria-live="polite" data-form-status></p>
     </form>
   </section>`;
 
 const footer = () => `
   <footer class="site-footer">
-    <div class="site-footer__brand">
+    <div>
       ${brand("/")}
-      <p>Corporate merchandise produced in the EU and delivered to offices, hotels and event venues across Europe.</p>
+      <p>Corporate merchandise produced in the EU and delivered across Europe.</p>
     </div>
-    <nav class="site-footer__nav" aria-label="Footer navigation">
-      <span>Explore</span>
-      <a href="/#services">What we produce</a>
-      <a href="/#projects">Selected projects</a>
-      <a href="/#delivery">EU delivery</a>
-      <a href="/#process">How it works</a>
-    </nav>
-    <div class="site-footer__contact">
-      <span>Contact</span>
+    <div class="footer-links">
+      <a href="${site.poweredByUrl}" target="_blank" rel="noopener">SWAGGY.agency</a>
       <a href="mailto:${site.email}">${site.email}</a>
       <a href="${site.telegramUrl}" target="_blank" rel="noopener">Telegram</a>
-      <a href="${site.privacyUrl}" target="_blank" rel="noopener">Privacy policy</a>
+      <a href="${site.privacyUrl}" target="_blank" rel="noopener">Privacy</a>
     </div>
-    <div class="site-footer__note">
-      <span>© ${new Date().getFullYear()} corp-merch.eu</span>
-      <a href="${site.poweredByUrl}" target="_blank" rel="noopener">A project by SWAGGY.agency</a>
-      <span>Project photography shows completed merchandise work.</span>
-    </div>
+    <p class="footer-note">© ${new Date().getFullYear()} corp-merch.eu. Conference names belong to their respective owners.</p>
   </footer>`;
 
 const faqMarkup = (items) => items.map((item) => `
@@ -150,6 +141,16 @@ const galleryMarkup = gallery.map((item) => `
     ${picture({ item }).trim()}
     <figcaption><strong>${escapeHtml(item.client)}</strong><span>${escapeHtml(item.type)}</span></figcaption>
   </figure>`).join("");
+
+const featuredEventsMarkup = featuredEvents.map((item, index) => `
+  <a class="event-row" href="#brief" data-event="event_cta_click" data-event-label="${escapeHtml(item.name)}">
+    <span>${String(index + 1).padStart(2, "0")}</span>
+    <strong>${escapeHtml(item.name)}</strong>
+    <em>${escapeHtml(item.location)}</em>
+    <b aria-hidden="true">↗</b>
+  </a>`).join("");
+
+const otherEventsMarkup = otherEvents.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
 const stepsMarkup = steps.map(([number, title, description]) => `
   <li class="process-step">
@@ -279,15 +280,14 @@ const homepage = documentShell({
           <h1>Corporate Merch Production &amp; Delivery Across Europe</h1>
           <p class="hero__lead">Corporate merchandise, event giveaways, gifts, printing and POSM produced in Europe and delivered directly to your office, hotel or event venue.</p>
           <div class="hero__actions">
-            <a class="button button--mint" href="#brief" data-event="hero_cta_click">Get a Merch Proposal <span aria-hidden="true">↗</span></a>
-            <a class="button button--ghost" href="#brief" data-event="hero_secondary_cta_click">Send Your Brief</a>
+            <a class="button button--mint" href="#brief" data-event="hero_cta_click">Let's Make Merch <span aria-hidden="true">↗</span></a>
+            <a class="text-link hero-secondary-link" href="#brief" data-event="hero_secondary_cta_click">Send Your Brief</a>
           </div>
           ${proofList(["EU production", "One point of contact", "Direct event delivery"])}
         </div>
         <div class="hero__visual">
           ${picture({ item: gallery[0], eager: true, className: "hero__picture" }).trim()}
           <div class="hero__caption"><span>Selected work</span><strong>IPONWEB · Conference merchandise</strong></div>
-          <div class="hero__stamp" aria-label="Made in the EU, delivered across the EU"><span>MADE IN EU</span><span>DELIVERED ACROSS EU</span></div>
         </div>
       </section>
 
@@ -317,6 +317,22 @@ const homepage = documentShell({
         <div class="project-grid">${galleryMarkup}</div>
       </section>
 
+      <section class="events-section" id="events" data-observe-event="conference_section_view">
+        <div class="events-section__heading">
+          <div>
+            <p class="eyebrow"><span>European conference circuit</span></p>
+            <h2>Planning merch for a European event?</h2>
+          </div>
+          <p>Produce in the EU and deliver directly to the venue or hotel through one point of contact.</p>
+        </div>
+        <div class="event-list">${featuredEventsMarkup}</div>
+        <div class="other-events">
+          <span>Also supporting teams attending</span>
+          <ul>${otherEventsMarkup}</ul>
+        </div>
+        <p class="events-disclaimer">Conference names are used to describe events our clients may attend. corp-merch.eu and SWAGGY are not presented as official suppliers or partners unless explicitly stated otherwise.</p>
+      </section>
+
       <section class="section use-cases-section">
         <div class="section-heading section-heading--split">
           <div>
@@ -343,10 +359,11 @@ const homepage = documentShell({
           </div>
           <div class="eu-section__copy">
             <p>Produce once and deliver directly to the office, hotel or venue — with one contact and one coordinated accounting flow.</p>
-            <a class="button button--coral" href="#brief" data-event="event_cta_click">Plan an EU merchandise project <span aria-hidden="true">↗</span></a>
+            <a class="button button--mint" href="#brief" data-event="delivery_cta_click">Let's Make Merch <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <div class="benefit-grid">${benefitsMarkup}</div>
+        <p class="customs-line"><strong>Standard intra-EU deliveries:</strong> import customs clearance is normally not required. Non-EU destinations follow different rules.</p>
       </section>
 
       <section class="section process-section" id="process">
@@ -373,7 +390,7 @@ const homepage = documentShell({
     </main>
     ${footer()}
   </div>
-  <a class="mobile-sticky-cta" href="#brief" data-event="mobile_sticky_cta_click">Get a Merch Proposal</a>`
+  <a class="mobile-sticky-cta" href="#brief" data-event="mobile_sticky_cta_click">Let's Make Merch</a>`
 });
 
 const igamingSchema = structuredData({
@@ -407,15 +424,14 @@ const igamingHtml = documentShell({
           <h1>${escapeHtml(igamingPage.h1)}</h1>
           <p class="hero__lead">${escapeHtml(igamingPage.lead)}</p>
           <div class="hero__actions">
-            <a class="button button--mint" href="#brief" data-event="hero_cta_click">Get a Merch Proposal <span aria-hidden="true">↗</span></a>
-            <a class="button button--ghost" href="/#projects">See Selected Work</a>
+            <a class="button button--mint" href="#brief" data-event="hero_cta_click">Let's Make Merch <span aria-hidden="true">↗</span></a>
+            <a class="text-link hero-secondary-link" href="/#projects">See Selected Work</a>
           </div>
           ${proofList(igamingPage.proof)}
         </div>
         <div class="hero__visual">
           ${picture({ item: gallery[0], eager: true, className: "hero__picture" }).trim()}
           <div class="hero__caption"><span>Selected work</span><strong>IPONWEB · Conference merchandise</strong></div>
-          <div class="hero__stamp"><span>EVENT READY</span><span>ACROSS THE EU</span></div>
         </div>
       </section>
 
@@ -454,7 +470,7 @@ const igamingHtml = documentShell({
     </main>
     ${footer()}
   </div>
-  <a class="mobile-sticky-cta" href="#brief" data-event="mobile_sticky_cta_click">Get a Merch Proposal</a>`
+  <a class="mobile-sticky-cta" href="#brief" data-event="mobile_sticky_cta_click">Let's Make Merch</a>`
 });
 
 const notFoundHtml = `<!doctype html>

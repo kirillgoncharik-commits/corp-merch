@@ -60,19 +60,25 @@ if (!html.includes("Merch for conferences, offices and teams")) failures.push("C
 if (!html.includes("One supplier across the EU")) failures.push("EU delivery positioning is missing.");
 if (!html.includes("standard intra-EU deliveries") && !html.includes("Standard intra-EU deliveries")) failures.push("Intra-EU customs explanation is missing.");
 if (!html.includes("Printing &amp; POSM") || !html.includes("Welcome Kits &amp; Employee Gifts")) failures.push("Priority service topics are missing.");
-if (!html.includes("Get a Merch Proposal") || !html.includes("Send Your Brief")) failures.push("Approved CTA copy is missing.");
-if (html.includes("Get a Quote")) failures.push("Disallowed Get a Quote CTA remains.");
+if (!html.includes("Let's Make Merch") || !html.includes("Send Your Brief")) failures.push("Approved CTA copy is missing.");
+if (html.includes("Get a Merch Proposal") || html.includes("Get a Quote")) failures.push("Legacy CTA copy remains.");
 
 if (count(html, /class="service-card"/g) !== 6) failures.push("Homepage must contain six service categories.");
 if (count(html, /class="project-card /g) !== 6) failures.push("Homepage must contain six unique project cards.");
 if (count(html, /class="process-step"/g) !== 5) failures.push("Homepage must contain five compact process steps.");
 if (count(html, /data-observe-event="project_gallery_view"/g) !== 1) failures.push("Project gallery analytics marker is missing or duplicated.");
-if (html.includes("route-board") || html.includes("deliveryCities") || html.includes("conference-section")) failures.push("Removed delivery or conference UI remains on the homepage.");
+if (html.includes("route-board") || html.includes("deliveryCities") || html.includes("hero__stamp")) failures.push("Removed route-board or photo-sticker UI remains on the homepage.");
+if (!html.includes('id="events"') || count(html, /class="event-row"/g) !== 5) failures.push("Homepage must contain the compact five-event conference list.");
+for (const eventName of ["ICE Barcelona 2027", "iGB Affiliate Barcelona 2027", "TES Affiliate Conference Seville 2027", "SBC Summit Europe", "SiGMA Europe"]) {
+  if (!html.includes(eventName)) failures.push(`Homepage event list is missing: ${eventName}`);
+}
+if (count(html, /class="benefit-card"/g) !== 4) failures.push("Homepage must contain four compact EU benefit cards.");
 if (html.includes('name="event"')) failures.push("Homepage form must stay limited to four core fields.");
 
 const homepageOrder = [
   'id="services"',
   'id="projects"',
+  'id="events"',
   'class="section use-cases-section"',
   'id="delivery"',
   'id="process"',
@@ -109,6 +115,7 @@ for (const color of ["#1d211f", "#176b68", "#d8ece7", "#f6f4ee", "#151817", "#ff
   if (!css.toLowerCase().includes(color)) failures.push(`Production palette is missing ${color}.`);
 }
 if (css.toLowerCase().includes("#2638cf")) failures.push("Legacy cobalt primary color remains in production CSS.");
+if (css.includes("border-radius: 999px")) failures.push("Pill-shaped 999px radii must not remain in the production visual system.");
 
 for (const image of [
   "iponweb-conference-merchandise.webp",

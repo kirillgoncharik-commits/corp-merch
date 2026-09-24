@@ -69,6 +69,21 @@ export const industries = [
   "Agencies"
 ];
 
+export const featuredEvents = [
+  { name: "ICE Barcelona 2027", location: "Barcelona, Spain" },
+  { name: "iGB Affiliate Barcelona 2027", location: "Barcelona, Spain" },
+  { name: "TES Affiliate Conference Seville 2027", location: "Seville, Spain" },
+  { name: "SBC Summit Europe", location: "Amsterdam, Netherlands" },
+  { name: "SiGMA Europe", location: "Malta" }
+];
+
+export const otherEvents = [
+  "Affiliate World Europe",
+  "iGB L!VE",
+  "TES Affiliate Conference Prague",
+  "SBC Summit Lisbon"
+];
+
 export const gallery = [
   {
     image: "iponweb-conference-merchandise",
@@ -156,19 +171,14 @@ export const benefits = [
       "One manager coordinates selection, suppliers, approvals, quality control and delivery."
   },
   {
-    title: "One accounting flow",
-    description:
-      "A consolidated supplier relationship simplifies procurement and accounting across projects and locations."
-  },
-  {
     title: "Direct event delivery",
     description:
       "Orders can go directly to an office, hotel, conference venue, booth or another agreed event location."
   },
   {
-    title: "No unnecessary customs hassle",
+    title: "One accounting flow",
     description:
-      "Standard intra-EU deliveries normally do not require import customs clearance. Non-EU destinations follow different rules."
+      "A consolidated supplier relationship simplifies procurement and accounting across projects and locations."
   }
 ];
 
