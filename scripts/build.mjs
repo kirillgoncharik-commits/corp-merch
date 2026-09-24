@@ -222,7 +222,7 @@ const documentShell = ({ title, description, canonical, schema, body, preloadIma
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(description)}">
-  <meta name="theme-color" content="#1D211F">
+  <meta name="theme-color" content="#F6F4EE">
   <meta name="ga4-measurement-id" content="${escapeHtml(site.gaMeasurementId)}">
   <link rel="canonical" href="${canonical}">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
