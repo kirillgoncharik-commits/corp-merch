@@ -75,7 +75,7 @@ Current verified preview: `https://corp-merch-eu-preview.kg-758.workers.dev/`
 
 ## Form delivery
 
-The form submits JSON to `/api/lead`. Required fields are Name, Work email, Company and What do you need?. Event / city / deadline is optional.
+The compact form submits JSON to `/api/lead`. Its four required fields are Name, Work email, Company and What do you need?. Event, city and deadline details can be included in the final field.
 
 Worker controls:
 

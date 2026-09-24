@@ -46,7 +46,7 @@ const checkPage = ({ source, name, canonical, faqCount }) => {
   }
 };
 
-checkPage({ source: html, name: "Homepage", canonical: "https://corp-merch.eu/", faqCount: 8 });
+checkPage({ source: html, name: "Homepage", canonical: "https://corp-merch.eu/", faqCount: 6 });
 checkPage({
   source: igamingHtml,
   name: "iGaming page",
@@ -57,7 +57,7 @@ checkPage({
 if (!html.includes("Corporate Merch Production &amp; Delivery Across Europe")) failures.push("Production H1 is missing.");
 if (!html.includes("Corporate merchandise produced in Europe")) failures.push("Corporate merchandise topic is missing.");
 if (!html.includes("Merch for conferences, offices and teams")) failures.push("Conference, office and team intent is missing.");
-if (!html.includes("Produce once. Deliver where your team needs it.")) failures.push("EU delivery positioning is missing.");
+if (!html.includes("One supplier across the EU")) failures.push("EU delivery positioning is missing.");
 if (!html.includes("standard intra-EU deliveries") && !html.includes("Standard intra-EU deliveries")) failures.push("Intra-EU customs explanation is missing.");
 if (!html.includes("Printing &amp; POSM") || !html.includes("Welcome Kits &amp; Employee Gifts")) failures.push("Priority service topics are missing.");
 if (!html.includes("Get a Merch Proposal") || !html.includes("Send Your Brief")) failures.push("Approved CTA copy is missing.");
@@ -65,7 +65,23 @@ if (html.includes("Get a Quote")) failures.push("Disallowed Get a Quote CTA rema
 
 if (count(html, /class="service-card"/g) !== 6) failures.push("Homepage must contain six service categories.");
 if (count(html, /class="project-card /g) !== 6) failures.push("Homepage must contain six unique project cards.");
+if (count(html, /class="process-step"/g) !== 5) failures.push("Homepage must contain five compact process steps.");
 if (count(html, /data-observe-event="project_gallery_view"/g) !== 1) failures.push("Project gallery analytics marker is missing or duplicated.");
+if (html.includes("route-board") || html.includes("deliveryCities") || html.includes("conference-section")) failures.push("Removed delivery or conference UI remains on the homepage.");
+if (html.includes('name="event"')) failures.push("Homepage form must stay limited to four core fields.");
+
+const homepageOrder = [
+  'id="services"',
+  'id="projects"',
+  'class="section use-cases-section"',
+  'id="delivery"',
+  'id="process"',
+  'class="section faq-section"',
+  'id="brief"'
+].map((marker) => html.indexOf(marker));
+if (homepageOrder.some((position) => position < 0) || homepageOrder.some((position, index) => index > 0 && position <= homepageOrder[index - 1])) {
+  failures.push("Homepage sections are not in the approved compact order.");
+}
 if (!html.includes('fetchpriority="high"') || !html.includes('rel="preload" as="image"')) failures.push("Hero LCP image priority is not configured.");
 if (count(html, /loading="lazy"/g) < 6) failures.push("Below-fold project images must be lazy loaded.");
 

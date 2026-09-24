@@ -180,8 +180,7 @@ The form requests:
 - Name
 - Work email
 - Company
-- What do you need?
-- Event / city / deadline (optional)
+- What do you need? (including products, quantity, city and deadline where known)
 
 The server-side endpoint validates the request and delivers it to `order@swaggy.agency`. Telegram and email links remain secondary conversion routes.
 

@@ -53,11 +53,11 @@ export const categories = [
 
 export const useCases = [
   ["Conferences & Exhibitions", "Merchandise delivered to the venue, booth or hotel before your team arrives."],
-  ["Office & Team Merchandise", "One coordinated order for teams and offices in different EU locations."],
+  ["Offices & Teams", "One coordinated order for teams and offices in different EU locations."],
   ["Employee Onboarding", "Welcome kits assembled, packed and routed to the agreed destinations."],
   ["Marketing Campaigns", "Products, print and POSM aligned with one campaign and rollout plan."],
-  ["Partner & Client Gifts", "Branded gifts prepared for meetings, events and relationship programmes."],
-  ["DevRel & Community Events", "Useful merchandise for meetups, hackathons and developer conferences."]
+  ["Partner / Client Gifts", "Branded gifts prepared for meetings, events and relationship programmes."],
+  ["DevRel / Community", "Useful merchandise for meetups, hackathons and developer conferences."]
 ];
 
 export const industries = [
@@ -66,21 +66,7 @@ export const industries = [
   "FinTech",
   "Crypto",
   "Gaming",
-  "Finance",
-  "Startups",
   "Agencies"
-];
-
-export const deliveryCities = [
-  "Barcelona",
-  "Amsterdam",
-  "Lisbon",
-  "Prague",
-  "Berlin",
-  "Paris",
-  "Warsaw",
-  "Riga",
-  "Malta"
 ];
 
 export const gallery = [
@@ -180,11 +166,6 @@ export const benefits = [
       "Orders can go directly to an office, hotel, conference venue, booth or another agreed event location."
   },
   {
-    title: "Deadline management",
-    description:
-      "Production is planned backwards from the date the merchandise must be ready at its destination."
-  },
-  {
     title: "No unnecessary customs hassle",
     description:
       "Standard intra-EU deliveries normally do not require import customs clearance. Non-EU destinations follow different rules."
@@ -196,8 +177,7 @@ export const steps = [
   ["02", "Selection", "We prepare a focused shortlist that fits the audience, budget, timing and delivery plan."],
   ["03", "Production", "Approved products move into EU sourcing, production and branding."],
   ["04", "Quality control", "The order is checked against the approved specification before packing and dispatch."],
-  ["05", "Packing", "Items are packed for the handover, event, team or destination structure you need."],
-  ["06", "Delivery", "We coordinate delivery to the agreed office, hotel, venue, booth or event location."]
+  ["05", "Delivery", "We pack the order for its destination and coordinate delivery to the agreed office, hotel, venue or booth."]
 ];
 
 export const faqs = [
@@ -220,16 +200,6 @@ export const faqs = [
     question: "Can you manage merchandise for multiple European offices?",
     answer:
       "Yes. We can coordinate one product and branding plan, then pack and deliver the order to several agreed EU office locations."
-  },
-  {
-    question: "Can you produce custom apparel, printing and POSM?",
-    answer:
-      "Yes. The service covers branded apparel and textile, promotional products, printed materials, POSM, corporate gifts and coordinated kits."
-  },
-  {
-    question: "Do you work with iGaming, fintech, crypto and technology companies?",
-    answer:
-      "Yes. SWAGGY works with international B2B teams, including iGaming, IT and SaaS, fintech, crypto, gaming, finance, startups and agencies."
   },
   {
     question: "Can you prepare employee welcome kits?",

@@ -5,7 +5,6 @@ import path from "node:path";
 import {
   benefits,
   categories,
-  deliveryCities,
   faqs,
   gallery,
   igamingPage,
@@ -89,14 +88,13 @@ const leadForm = ({ context = "homepage" } = {}) => `
     <form class="lead-form" action="/api/lead" method="post" data-lead-form novalidate>
       <div class="lead-form__heading">
         <strong>Send your brief</strong>
-        <span>Four required fields. Usually under a minute.</span>
+        <span>Four fields. Usually under a minute.</span>
       </div>
       <div class="form-grid">
         <label>Name <span aria-hidden="true">*</span><input name="name" type="text" autocomplete="name" required maxlength="80" placeholder="Your name"></label>
         <label>Work email <span aria-hidden="true">*</span><input name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@company.com"></label>
         <label>Company <span aria-hidden="true">*</span><input name="company" type="text" autocomplete="organization" required maxlength="100" placeholder="Company name"></label>
-        <label>Event / city / deadline <small>optional</small><input name="event" type="text" maxlength="160" placeholder="Barcelona · 15 March"></label>
-        <label class="form-grid__wide">What do you need? <span aria-hidden="true">*</span><textarea name="need" rows="5" required maxlength="2000" placeholder="Products, quantity, audience, delivery point — whatever you already know."></textarea></label>
+        <label>What do you need? <span aria-hidden="true">*</span><textarea name="need" rows="3" required maxlength="2000" placeholder="Products, quantity, city and deadline"></textarea></label>
       </div>
       <label class="honeypot" aria-hidden="true">Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label>
       <input type="hidden" name="startedAt" value="" data-started-at>
@@ -109,17 +107,28 @@ const leadForm = ({ context = "homepage" } = {}) => `
 
 const footer = () => `
   <footer class="site-footer">
-    <div class="site-footer__top">
+    <div class="site-footer__brand">
       ${brand("/")}
-      <p>Corporate merchandise produced in the EU and delivered across the European Union.</p>
+      <p>Corporate merchandise produced in the EU and delivered to offices, hotels and event venues across Europe.</p>
     </div>
-    <div class="site-footer__links">
-      <a href="${site.poweredByUrl}" target="_blank" rel="noopener">A project by SWAGGY.agency</a>
+    <nav class="site-footer__nav" aria-label="Footer navigation">
+      <span>Explore</span>
+      <a href="/#services">What we produce</a>
+      <a href="/#projects">Selected projects</a>
+      <a href="/#delivery">EU delivery</a>
+      <a href="/#process">How it works</a>
+    </nav>
+    <div class="site-footer__contact">
+      <span>Contact</span>
       <a href="mailto:${site.email}">${site.email}</a>
       <a href="${site.telegramUrl}" target="_blank" rel="noopener">Telegram</a>
       <a href="${site.privacyUrl}" target="_blank" rel="noopener">Privacy policy</a>
     </div>
-    <p class="site-footer__note">© ${new Date().getFullYear()} corp-merch.eu. Project photography is shown as examples of completed merchandise work.</p>
+    <div class="site-footer__note">
+      <span>© ${new Date().getFullYear()} corp-merch.eu</span>
+      <a href="${site.poweredByUrl}" target="_blank" rel="noopener">A project by SWAGGY.agency</a>
+      <span>Project photography shows completed merchandise work.</span>
+    </div>
   </footer>`;
 
 const faqMarkup = (items) => items.map((item) => `
@@ -297,6 +306,17 @@ const homepage = documentShell({
         <div class="service-grid">${categoryMarkup}</div>
       </section>
 
+      <section class="section projects-section" id="projects" data-observe-event="project_gallery_view">
+        <div class="section-heading section-heading--split">
+          <div>
+            <p class="eyebrow eyebrow--dark"><span>Selected projects</span></p>
+            <h2>Real merchandise for real teams</h2>
+          </div>
+          <p>Six completed projects across conference merchandise, textile, gaming, welcome kits, corporate gifts and apparel.</p>
+        </div>
+        <div class="project-grid">${galleryMarkup}</div>
+      </section>
+
       <section class="section use-cases-section">
         <div class="section-heading section-heading--split">
           <div>
@@ -309,51 +329,24 @@ const homepage = documentShell({
           ${useCases.map(([title, description], index) => `<article><span>${String(index + 1).padStart(2, "0")}</span><h3>${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p></article>`).join("")}
         </div>
         <div class="industry-band">
-          <div><span>Priority experience</span><strong>Merchandise for iGaming, tech, fintech and crypto</strong></div>
+          <div><span>Sector experience</span><strong>International B2B teams</strong></div>
           <ul>${industries.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
           <a href="${igamingPage.path}">Explore iGaming merchandise <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
-      <section class="delivery-section" id="delivery">
-        <div class="delivery-section__intro">
-          <p class="eyebrow"><span>European delivery</span></p>
-          <h2>Produce once. Deliver where your team needs it.</h2>
-          <p>One coordinated merchandise programme can support an event in Barcelona, an office in Amsterdam and a team in Prague — without rebuilding the supplier network for every location.</p>
-          <p class="customs-note"><strong>Standard intra-EU deliveries:</strong> no unnecessary import customs hassle. Non-EU destinations such as the UK, Switzerland, Serbia and the UAE follow different rules.</p>
-        </div>
-        <div class="route-board" aria-label="Example European delivery destinations">
-          <div class="route-board__origin"><span>Production</span><strong>EU</strong></div>
-          <div class="route-board__line" aria-hidden="true"></div>
-          <ul>${deliveryCities.map((city) => `<li>${city}</li>`).join("")}</ul>
-          <p>Office · Hotel · Venue · Booth · Agreed event location</p>
-        </div>
-        <div class="benefit-grid">${benefitsMarkup}</div>
-      </section>
-
-      <section class="section projects-section" id="projects" data-observe-event="project_gallery_view">
+      <section class="section eu-section" id="delivery">
         <div class="section-heading section-heading--split">
           <div>
-            <p class="eyebrow eyebrow--dark"><span>Selected projects</span></p>
-            <h2>Real merchandise for real events</h2>
+            <p class="eyebrow eyebrow--dark"><span>European production &amp; delivery</span></p>
+            <h2>One supplier across the EU</h2>
           </div>
-          <p>Textile, bags, gaming merchandise, welcome kits, corporate gifts and apparel produced for real teams.</p>
+          <div class="eu-section__copy">
+            <p>Produce once and deliver directly to the office, hotel or venue — with one contact and one coordinated accounting flow.</p>
+            <a class="button button--coral" href="#brief" data-event="event_cta_click">Plan an EU merchandise project <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
-        <div class="project-grid">${galleryMarkup}</div>
-      </section>
-
-      <section class="conference-section">
-        <div class="conference-section__copy">
-          <p class="eyebrow"><span>Conference deadlines</span></p>
-          <h2>Planning merch for an upcoming European conference?</h2>
-          <p>We can plan production backwards from the event date and deliver to the venue or hotel before your team arrives. Share the city, date, audience and what you already know.</p>
-          <a class="button button--coral" href="#brief" data-event="event_cta_click">Plan merch for this event <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="conference-section__timing">
-          <div><span>Comfortable</span><strong>3–4+ weeks</strong><p>More choice and time for artwork approvals.</p></div>
-          <div><span>Custom / complex</span><strong>Plan earlier</strong><p>Large quantities, custom production and multiple destinations need more time.</p></div>
-          <div><span>Urgent</span><strong>Ask us</strong><p>We will confirm what is realistically possible.</p></div>
-        </div>
+        <div class="benefit-grid">${benefitsMarkup}</div>
       </section>
 
       <section class="section process-section" id="process">
@@ -434,10 +427,9 @@ const igamingHtml = documentShell({
         <div><p>${escapeHtml(igamingPage.introCopy)}</p><ul>${igamingPage.serviceTypes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>
       </section>
 
-      <section class="delivery-section vertical-benefits">
-        <div class="delivery-section__intro">
-          <p class="eyebrow"><span>One production flow</span></p>
-          <h2>Merchandise that reaches the team before the doors open.</h2>
+      <section class="section eu-section vertical-benefits">
+        <div class="section-heading section-heading--split">
+          <div><p class="eyebrow eyebrow--dark"><span>One production flow</span></p><h2>Merchandise that reaches the team before the doors open.</h2></div>
           <p>Plan a single conference, a multi-event season or coordinated merchandise for offices and commercial teams across the EU.</p>
         </div>
         <div class="benefit-grid">${benefitsMarkup}</div>
