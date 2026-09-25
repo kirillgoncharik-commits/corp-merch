@@ -110,10 +110,10 @@ if (!clientScript.includes("measurementId") || !clientScript.includes('window.gt
 if (gaId && !/^G-[A-Z0-9]{6,}$/.test(gaId)) failures.push("GA4 measurement ID has an invalid format.");
 if (!gaId) warnings.push("GA4_MEASUREMENT_ID is not set; create the separate corp-merch.eu web stream before production deployment.");
 if (process.env.REQUIRE_GA4 === "1" && !gaId) failures.push("Production check requires GA4_MEASUREMENT_ID.");
-if (!html.includes('og:image" content="https://corp-merch.eu/assets/images/og-corp-merch-swaggy-v3.jpg"')) failures.push("Homepage OG preview image is missing.");
+if (!html.includes('og:image" content="https://corp-merch.eu/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg"')) failures.push("Homepage OG preview image is missing.");
 if (!html.includes('og:image:width" content="600"') || !html.includes('og:image:height" content="315"')) failures.push("OG preview dimensions are incomplete.");
-if (!html.includes('twitter:card" content="summary_large_image"') || !html.includes('twitter:image" content="https://corp-merch.eu/assets/images/og-corp-merch-swaggy-v3.jpg"')) failures.push("Twitter/X social preview metadata is incomplete.");
-if (!html.includes('og:image:url" content="https://corp-merch.eu/assets/images/og-corp-merch-swaggy-v3.jpg"') || !html.includes('rel="image_src" href="https://corp-merch.eu/assets/images/og-corp-merch-swaggy-v3.jpg"')) failures.push("Social preview crawler fallbacks are incomplete.");
+if (!html.includes('twitter:card" content="summary_large_image"') || !html.includes('twitter:image" content="https://corp-merch.eu/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg"')) failures.push("Twitter/X social preview metadata is incomplete.");
+
 
 for (const color of ["#1d211f", "#176b68", "#d8ece7", "#f6f4ee", "#151817", "#ff6b52"]) {
   if (!css.toLowerCase().includes(color)) failures.push(`Production palette is missing ${color}.`);
@@ -134,7 +134,7 @@ for (const image of [
   "holiday-corporate-gift-box-europe-640.webp",
   "eschatology-branded-apparel-set.webp",
   "eschatology-branded-apparel-set-512.webp",
-  "og-corp-merch-swaggy-v3.jpg"
+  "og-swaggy-corporate-merch-europe-social-v1.jpg"
 ]) {
   try {
     await access(path.join(root, "dist/assets/images", image));

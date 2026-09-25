@@ -39,7 +39,7 @@ const escapeHtml = (value) =>
 const cleanOutput = (value) => value.replace(/[ \t]+$/gm, "");
 
 const imageUrl = (name) => `/assets/images/${name}.webp`;
-const socialPreviewImage = `${site.url}/assets/images/og-corp-merch-swaggy-v3.jpg`;
+const socialPreviewImage = `${site.url}/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg`;
 
 const picture = ({ item, eager = false, className = "" }) => `
   <picture class="${className}">
@@ -243,17 +243,15 @@ const documentShell = ({ title, description, canonical, schema, body, preloadIma
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${canonical}">
   <meta property="og:image" content="${socialPreviewImage}">
-  <meta property="og:image:url" content="${socialPreviewImage}">
   <meta property="og:image:secure_url" content="${socialPreviewImage}">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="600">
   <meta property="og:image:height" content="315">
-  <meta property="og:image:alt" content="SWAGGY corporate merchandise">
+  <meta property="og:image:alt" content="SWAGGY branded corporate merchandise prepared for a European event team">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
   <meta name="twitter:image" content="${socialPreviewImage}">
-  <link rel="image_src" href="${socialPreviewImage}">
   ${preloadImage ? `<link rel="preload" as="image" href="${imageUrl(preloadImage.image)}" imagesrcset="${imageUrl(preloadImage.mobileImage)} ${preloadImage.mobileWidth}w, ${imageUrl(preloadImage.image)} ${preloadImage.width}w" imagesizes="(max-width: 820px) 100vw, 50vw">` : ""}
   <link rel="stylesheet" href="/assets/styles.css?v=${assetVersion}">
   <script type="application/ld+json">${JSON.stringify(schema)}</script>
