@@ -39,7 +39,7 @@ const escapeHtml = (value) =>
 const cleanOutput = (value) => value.replace(/[ \t]+$/gm, "");
 
 const imageUrl = (name) => `/assets/images/${name}.webp`;
-const socialPreviewImage = `${site.url}/assets/images/og-corp-merch-swaggy-v2.jpg`;
+const socialPreviewImage = `${site.url}/assets/images/og-corp-merch-swaggy-v3.jpg`;
 
 const picture = ({ item, eager = false, className = "" }) => `
   <picture class="${className}">
@@ -246,8 +246,8 @@ const documentShell = ({ title, description, canonical, schema, body, preloadIma
   <meta property="og:image:url" content="${socialPreviewImage}">
   <meta property="og:image:secure_url" content="${socialPreviewImage}">
   <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image:width" content="600">
+  <meta property="og:image:height" content="315">
   <meta property="og:image:alt" content="SWAGGY corporate merchandise">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
