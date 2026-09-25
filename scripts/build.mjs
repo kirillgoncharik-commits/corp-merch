@@ -39,7 +39,7 @@ const escapeHtml = (value) =>
 const cleanOutput = (value) => value.replace(/[ \t]+$/gm, "");
 
 const imageUrl = (name) => `/assets/images/${name}.webp`;
-const socialPreviewImage = `${site.url}/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg`;
+const socialPreviewImage = `${site.url}/assets/images/og-swaggy-corporate-merch-europe-social-v2.jpg`;
 
 const picture = ({ item, eager = false, className = "" }) => `
   <picture class="${className}">

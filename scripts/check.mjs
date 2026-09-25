@@ -17,6 +17,41 @@ const [html, igamingHtml, css, clientScript, workerSource, wranglerConfig, sitem
 const failures = [];
 const warnings = [];
 const count = (source, pattern) => (source.match(pattern) || []).length;
+const socialPreviewFilename = "og-swaggy-corporate-merch-europe-social-v2.jpg";
+const socialPreviewUrl = `https://corp-merch.eu/assets/images/${socialPreviewFilename}`;
+
+const readJpegFrame = (buffer) => {
+  if (buffer.length < 4 || buffer[0] !== 0xff || buffer[1] !== 0xd8) return null;
+
+  let offset = 2;
+  while (offset < buffer.length) {
+    while (offset < buffer.length && buffer[offset] !== 0xff) offset += 1;
+    while (offset < buffer.length && buffer[offset] === 0xff) offset += 1;
+    if (offset >= buffer.length) break;
+
+    const marker = buffer[offset];
+    offset += 1;
+    if (marker === 0xd9 || marker === 0xda) break;
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd8)) continue;
+    if (offset + 1 >= buffer.length) break;
+
+    const segmentLength = buffer.readUInt16BE(offset);
+    const isStartOfFrame = [0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(marker);
+    if (isStartOfFrame && segmentLength >= 8 && offset + segmentLength <= buffer.length) {
+      return {
+        marker,
+        height: buffer.readUInt16BE(offset + 3),
+        width: buffer.readUInt16BE(offset + 5),
+        components: buffer[offset + 7]
+      };
+    }
+
+    if (segmentLength < 2) break;
+    offset += segmentLength;
+  }
+
+  return null;
+};
 
 const checkPage = ({ source, name, canonical, faqCount }) => {
   if (count(source, /<h1\b/g) !== 1) failures.push(`${name} must contain exactly one H1.`);
@@ -110,9 +145,19 @@ if (!clientScript.includes("measurementId") || !clientScript.includes('window.gt
 if (gaId && !/^G-[A-Z0-9]{6,}$/.test(gaId)) failures.push("GA4 measurement ID has an invalid format.");
 if (!gaId) warnings.push("GA4_MEASUREMENT_ID is not set; create the separate corp-merch.eu web stream before production deployment.");
 if (process.env.REQUIRE_GA4 === "1" && !gaId) failures.push("Production check requires GA4_MEASUREMENT_ID.");
-if (!html.includes('og:image" content="https://corp-merch.eu/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg"')) failures.push("Homepage OG preview image is missing.");
-if (!html.includes('og:image:width" content="600"') || !html.includes('og:image:height" content="315"')) failures.push("OG preview dimensions are incomplete.");
-if (!html.includes('twitter:card" content="summary_large_image"') || !html.includes('twitter:image" content="https://corp-merch.eu/assets/images/og-swaggy-corporate-merch-europe-social-v1.jpg"')) failures.push("Twitter/X social preview metadata is incomplete.");
+for (const [name, source] of [["Homepage", html], ["iGaming page", igamingHtml]]) {
+  if (!source.includes(`property="og:image" content="${socialPreviewUrl}"`)) failures.push(`${name} OG preview image is incorrect.`);
+  if (!source.includes(`property="og:image:secure_url" content="${socialPreviewUrl}"`)) failures.push(`${name} secure OG preview image is incorrect.`);
+  if (!source.includes('property="og:image:type" content="image/jpeg"')) failures.push(`${name} OG preview type is incorrect.`);
+  if (!source.includes('property="og:image:width" content="600"') || !source.includes('property="og:image:height" content="315"')) {
+    failures.push(`${name} OG preview dimensions are incomplete.`);
+  }
+  if (!source.includes('name="twitter:card" content="summary_large_image"') || !source.includes(`name="twitter:image" content="${socialPreviewUrl}"`)) {
+    failures.push(`${name} Twitter/X social preview metadata is incomplete.`);
+  }
+  if (/og-corp-merch-[^"'<>\s]*/i.test(source)) failures.push(`${name} still contains an old og-corp-merch-* preview filename.`);
+  if (source.includes("og-swaggy-corporate-merch-europe-social-v1.jpg")) failures.push(`${name} still contains the superseded social preview filename.`);
+}
 
 
 for (const color of ["#1d211f", "#176b68", "#d8ece7", "#f6f4ee", "#151817", "#ff6b52"]) {
@@ -134,13 +179,27 @@ for (const image of [
   "holiday-corporate-gift-box-europe-640.webp",
   "eschatology-branded-apparel-set.webp",
   "eschatology-branded-apparel-set-512.webp",
-  "og-swaggy-corporate-merch-europe-social-v1.jpg"
+  socialPreviewFilename
 ]) {
   try {
     await access(path.join(root, "dist/assets/images", image));
   } catch {
     failures.push(`Required optimized image is missing: ${image}`);
   }
+}
+
+try {
+  const previewBuffer = await readFile(path.join(root, "dist/assets/images", socialPreviewFilename));
+  const frame = readJpegFrame(previewBuffer);
+  if (!frame) {
+    failures.push("Social preview asset is not a readable JPEG.");
+  } else {
+    if (frame.width !== 600 || frame.height !== 315) failures.push("Social preview asset must be exactly 600×315 pixels.");
+    if (frame.components !== 3) failures.push("Social preview asset must be a three-component RGB JPEG.");
+    if (frame.marker !== 0xc0) failures.push("Social preview asset must use standard baseline JPEG encoding.");
+  }
+} catch {
+  failures.push(`Social preview asset cannot be read: ${socialPreviewFilename}`);
 }
 
 const assetMatches = [...html.matchAll(/(?:src|href)="(\/(?:assets\/[^"?#]+|favicon\.svg))"/g)];
