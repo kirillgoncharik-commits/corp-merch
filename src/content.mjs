@@ -74,11 +74,16 @@ export const featuredEvents = [
   { name: "iGB Affiliate Barcelona 2027", location: "Barcelona, Spain" },
   { name: "TES Affiliate Conference Seville 2027", location: "Seville, Spain" },
   { name: "SBC Summit Europe", location: "Amsterdam, Netherlands" },
-  { name: "SiGMA Europe", location: "Malta" }
+  { name: "SiGMA Europe", location: "Malta" },
+  {
+    name: "Affiliate World Europe",
+    date: "TBA",
+    location: "Budapest, Hungary*",
+    website: "affiliateworldconferences.com"
+  }
 ];
 
 export const otherEvents = [
-  "Affiliate World Europe",
   "iGB L!VE",
   "TES Affiliate Conference Prague",
   "SBC Summit Lisbon"

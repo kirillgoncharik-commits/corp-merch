@@ -68,8 +68,8 @@ if (count(html, /class="project-card /g) !== 6) failures.push("Homepage must con
 if (count(html, /class="process-step"/g) !== 5) failures.push("Homepage must contain five compact process steps.");
 if (count(html, /data-observe-event="project_gallery_view"/g) !== 1) failures.push("Project gallery analytics marker is missing or duplicated.");
 if (html.includes("route-board") || html.includes("deliveryCities") || html.includes("hero__stamp")) failures.push("Removed route-board or photo-sticker UI remains on the homepage.");
-if (!html.includes('id="events"') || count(html, /class="event-row"/g) !== 5) failures.push("Homepage must contain the compact five-event conference list.");
-for (const eventName of ["ICE Barcelona 2027", "iGB Affiliate Barcelona 2027", "TES Affiliate Conference Seville 2027", "SBC Summit Europe", "SiGMA Europe"]) {
+if (!html.includes('id="events"') || count(html, /class="event-row"/g) !== 6) failures.push("Homepage must contain the compact six-event conference list.");
+for (const eventName of ["ICE Barcelona 2027", "iGB Affiliate Barcelona 2027", "TES Affiliate Conference Seville 2027", "SBC Summit Europe", "SiGMA Europe", "Affiliate World Europe"]) {
   if (!html.includes(eventName)) failures.push(`Homepage event list is missing: ${eventName}`);
 }
 if (count(html, /class="benefit-card"/g) !== 4) failures.push("Homepage must contain four compact EU benefit cards.");
@@ -110,6 +110,9 @@ if (!clientScript.includes("measurementId") || !clientScript.includes('window.gt
 if (gaId && !/^G-[A-Z0-9]{6,}$/.test(gaId)) failures.push("GA4 measurement ID has an invalid format.");
 if (!gaId) warnings.push("GA4_MEASUREMENT_ID is not set; create the separate corp-merch.eu web stream before production deployment.");
 if (process.env.REQUIRE_GA4 === "1" && !gaId) failures.push("Production check requires GA4_MEASUREMENT_ID.");
+if (!html.includes('og:image" content="https://corp-merch.eu/assets/images/og-corp-merch-swaggy.jpg"')) failures.push("Homepage OG preview image is missing.");
+if (!html.includes('og:image:width" content="1200"') || !html.includes('og:image:height" content="630"')) failures.push("OG preview dimensions are incomplete.");
+if (!html.includes('twitter:card" content="summary_large_image"') || !html.includes('twitter:image" content="https://corp-merch.eu/assets/images/og-corp-merch-swaggy.jpg"')) failures.push("Twitter/X social preview metadata is incomplete.");
 
 for (const color of ["#1d211f", "#176b68", "#d8ece7", "#f6f4ee", "#151817", "#ff6b52"]) {
   if (!css.toLowerCase().includes(color)) failures.push(`Production palette is missing ${color}.`);
@@ -129,7 +132,8 @@ for (const image of [
   "holiday-corporate-gift-box-europe.webp",
   "holiday-corporate-gift-box-europe-640.webp",
   "eschatology-branded-apparel-set.webp",
-  "eschatology-branded-apparel-set-512.webp"
+  "eschatology-branded-apparel-set-512.webp",
+  "og-corp-merch-swaggy.jpg"
 ]) {
   try {
     await access(path.join(root, "dist/assets/images", image));

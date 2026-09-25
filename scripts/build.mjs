@@ -39,6 +39,7 @@ const escapeHtml = (value) =>
 const cleanOutput = (value) => value.replace(/[ \t]+$/gm, "");
 
 const imageUrl = (name) => `/assets/images/${name}.webp`;
+const socialPreviewImage = `${site.url}/assets/images/og-corp-merch-swaggy.jpg`;
 
 const picture = ({ item, eager = false, className = "" }) => `
   <picture class="${className}">
@@ -146,7 +147,7 @@ const featuredEventsMarkup = featuredEvents.map((item, index) => `
   <a class="event-row" href="#brief" data-event="event_cta_click" data-event-label="${escapeHtml(item.name)}">
     <span>${String(index + 1).padStart(2, "0")}</span>
     <strong>${escapeHtml(item.name)}</strong>
-    <em>${escapeHtml(item.location)}</em>
+    <em>${escapeHtml([item.date, item.location, item.website].filter(Boolean).join(" · "))}</em>
     <b aria-hidden="true">↗</b>
   </a>`).join("");
 
@@ -241,9 +242,16 @@ const documentShell = ({ title, description, canonical, schema, body, preloadIma
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${canonical}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="${socialPreviewImage}">
+  <meta property="og:image:secure_url" content="${socialPreviewImage}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SWAGGY corporate merchandise">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
+  <meta name="twitter:image" content="${socialPreviewImage}">
   ${preloadImage ? `<link rel="preload" as="image" href="${imageUrl(preloadImage.image)}" imagesrcset="${imageUrl(preloadImage.mobileImage)} ${preloadImage.mobileWidth}w, ${imageUrl(preloadImage.image)} ${preloadImage.width}w" imagesizes="(max-width: 820px) 100vw, 50vw">` : ""}
   <link rel="stylesheet" href="/assets/styles.css?v=${assetVersion}">
   <script type="application/ld+json">${JSON.stringify(schema)}</script>
